@@ -1,6 +1,7 @@
 async function handleGuildMemberAdd(member) {
+    const roleName = process.env.ROLE_NAME;
+    if (!roleName) return;
     try {
-        const roleName = process.env.ROLE_NAME;
         const role = member.guild.roles.cache.find((r) => r.name === roleName);
         if (!role) {
             console.log("부여할 역할을 찾을 수 없습니다.");
