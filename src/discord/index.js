@@ -7,13 +7,17 @@ require("dotenv").config();
 const token = process.env.DISCORD_TOKEN;
 
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.MessageContent],
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.MessageContent,
+    ],
 });
 
 client.once(Events.ClientReady, () => {
     console.log("Discord bot is ready!");
     checkStreamStatus(client);
-    setInterval(() => checkStreamStatus(client), 10000);
+    setInterval(() => checkStreamStatus(client), 45000);
 });
 
 if (process.env.ROLE_NAME) {
@@ -23,4 +27,3 @@ if (process.env.ROLE_NAME) {
 client.login(token);
 
 healthCheck.listen(3000);
-
