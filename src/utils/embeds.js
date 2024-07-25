@@ -30,7 +30,7 @@ function createEmbed(streamData) {
     if (youtubeId) {
         fields.push({
             name: "🔴 YouTube",
-            value: `[link](https://www.youtube.com/${youtubeId}/streams)`,
+            value: `[link](https://www.youtube.com/${youtubeId}/live)`,
             inline: true,
         });
     }
