@@ -1,5 +1,4 @@
 const { createEmbed } = require("../utils/embeds");
-const { sendTweets } = require("../twitter/sendTweets");
 require("dotenv").config();
 
 async function sendLiveNoti(client, streamData) {
@@ -19,7 +18,6 @@ async function sendLiveNoti(client, streamData) {
             .replace("T", " ")
             .split(".")[0];
         console.log(`${koreaNowStr} 방송시작 알림을 보냈습니다.`);
-        sendTweets(streamData);
     } catch (err) {
         console.error("방송알림을 보내기에 실패하였습니다: ", err);
     }

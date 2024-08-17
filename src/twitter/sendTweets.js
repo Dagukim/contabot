@@ -2,6 +2,16 @@ const { TwitterApi } = require("twitter-api-v2");
 const { getYoutubeLiveDetails } = require("../utils/youtubeApi");
 require("dotenv").config();
 
+if (
+    !process.env.TWITTER_APPKEY ||
+    !process.env.TWITTER_APPSECRET ||
+    !process.env.TWITTER_ACCESSTOKEN ||
+    !process.env.TWITTER_ACCESSSECRET
+) {
+    console.error("트위터 API 키와 토큰이 설정되지 않았습니다.");
+    return;
+}
+
 const appKey = process.env.TWITTER_APPKEY;
 const appSecret = process.env.TWITTER_APPSECRET;
 const accessToken = process.env.TWITTER_ACCESSTOKEN;
@@ -20,9 +30,6 @@ const twitterClient = new TwitterApi({
 });
 
 async function sendTweets(streamData) {
-    if (!appKey || !appSecret || !accessToken || !accessSecret) {
-        return;
-    }
     try {
         const ytLive = await getYoutubeLiveDetails(youtubeId);
         const tweetContents = `${

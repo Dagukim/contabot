@@ -1,6 +1,8 @@
 const { google } = require("googleapis");
 require("dotenv").config();
 
+if (!process.env.YOUTUBE_APIKEY) return;
+
 const YT_API_KEY = process.env.YOUTUBE_APIKEY;
 
 const youtube = google.youtube({
@@ -9,7 +11,7 @@ const youtube = google.youtube({
 });
 
 async function getYoutubeLiveDetails(CHANNEL_ID) {
-    if (!YT_API_KEY || !CHANNEL_ID) return;
+    if (!CHANNEL_ID) return;
     try {
         const res = await youtube.search.list({
             part: "snippet",
