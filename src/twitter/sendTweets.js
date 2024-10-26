@@ -20,7 +20,7 @@ const accessSecret = process.env.TWITTER_ACCESSSECRET;
 const chzzkId = process.env.CHZZK_CHANNEL_ID;
 const youtubeId = process.env.YOUTUBE_CHANNEL_ID;
 const chzzkLink = `https://chzzk.naver.com/live/${chzzkId}`;
-const youtubeLink = `https://www.youtube.com/channel/${youtubeId}/live`;
+// const youtubeLink = `https://www.youtube.com/channel/${youtubeId}/live`;
 
 const twitterClient = new TwitterApi({
     appKey,
@@ -37,7 +37,7 @@ async function sendTweets(streamData) {
                 ? `${ytLive.ytLiveTitle}\n`
                 : ""
         }${streamData.liveTitle}\n\n${
-            youtubeId ? `${youtubeLink}\n` : ""
+            youtubeId ? `${ytLive.ytLiveUrl}\n` : ""
         }${chzzkLink}`;
         await twitterClient.v2.tweet(tweetContents);
         console.log(`트윗을 보냈습니다.`);
