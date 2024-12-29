@@ -33,11 +33,11 @@ async function sendTweets(streamData) {
     try {
         const ytLive = await getYoutubeLiveDetails(youtubeId);
         const tweetContents = `${
-            ytLive && ytLive.ytLiveTitle !== streamData.liveTitle
-                ? `${ytLive.ytLiveTitle}\n`
+            ytLive && ytLive?.ytLiveTitle !== streamData?.liveTitle
+                ? `${ytLive?.ytLiveTitle}\n`
                 : ""
-        }${streamData.liveTitle}\n\n${
-            youtubeId ? `${ytLive.ytLiveUrl}\n` : ""
+        }${streamData?.liveTitle}\n\n${
+            youtubeId && ytLive?.ytLiveUrl ? `${ytLive?.ytLiveUrl}\n` : ""
         }${chzzkLink}`;
         await twitterClient.v2.tweet(tweetContents);
         console.log(`트윗을 보냈습니다.`);
