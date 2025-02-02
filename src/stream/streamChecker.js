@@ -28,10 +28,9 @@ async function checkStreamStatus(client, guildId) {
         if (isCurrentLive && !settings.live.status) {
             sendLiveNoti(client, guildId, data.content);
             if (settings.live.enableTweet) {
-                // setTimeout(async () => {
-                //     await sendTweets(data.content);
-                // }, 180000);
-                await sendTweets(settings, data.content);
+                setTimeout(async () => {
+                    await sendTweets(data.content);
+                }, 180000);
             }
             await updateGuildSettings(guildId, { live: { status: true } });
         }
