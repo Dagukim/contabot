@@ -1,53 +1,70 @@
 const { EmbedBuilder } = require("discord.js");
+const { logWithKoreaTime } = require("./logger");
 
-function createEmbed(streamData) {
-    const chzzkId = process.env.CHZZK_CHANNEL_ID;
-    const youtubeId = process.env.YOUTUBE_CHANNEL_ID;
-    const profileLink = process.env.PROFILE_LINK;
+function createEmbed(type, resData, ytHandle) {
+    if (type === "live") {
+        const imageUrl = resData.defaultThumbnailImageUrl
+            ? resData.defaultThumbnailImageUrl
+            : resData.liveImageUrl
+            ? resData.liveImageUrl.replace("{type}", "360")
+            : resData.channel.channelImageUrl;
 
-    const imageUrl = streamData.defaultThumbnailImageUrl
-        ? streamData.defaultThumbnailImageUrl
-        : streamData.liveImageUrl
-        ? streamData.liveImageUrl.replace("{type}", "360")
-        : streamData.channel.channelImageUrl;
+        const liveCategory =
+            resData.liveCategory?.trim() && resData.liveCategory?.length > 0
+                ? resData.liveCategory.replace(/_/g, " ")
+                : "none";
 
-    const liveCategory =
-        streamData.liveCategory?.trim() && streamData.liveCategory?.length > 0
-            ? streamData.liveCategory.replace(/_/g, " ")
-            : "none";
+        const fields = [
+            {
+                name: "🎮 Category",
+                value: liveCategory,
+            },
+            {
+                name: "⚡ CHZZK",
+                value: `[link](https://chzzk.naver.com/live/${resData.channel.channelId})`,
+                inline: true,
+            },
+        ];
+        if (ytHandle) {
+            fields.push({
+                name: "🔴 YouTube",
+                value: `[link](https://www.youtube.com/${ytHandle}/live)`,
+                inline: true,
+            });
+        }
 
-    const fields = [
-        {
-            name: "🎮 Category",
-            value: liveCategory,
-        },
-        {
-            name: "⚡ CHZZK",
-            value: `[link](https://chzzk.naver.com/live/${chzzkId})`,
-            inline: true,
-        },
-    ];
-    if (youtubeId) {
-        fields.push({
-            name: "🔴 YouTube",
-            value: `[link](https://www.youtube.com/channel/${youtubeId}/live)`,
-            inline: true,
-        });
+        const embed = new EmbedBuilder()
+            .setColor("#7a2015")
+            .setAuthor({
+                name: resData.channel.channelName,
+                iconURL: resData.channel.channelImageUrl,
+            })
+            .setTitle(resData.liveTitle)
+            .addFields(fields)
+            .setImage(imageUrl)
+            .setTimestamp();
+
+        return embed;
     }
 
-    const embed = new EmbedBuilder()
-        .setColor("#7a2015")
-        .setAuthor({
-            name: streamData.channel.channelName,
-            iconURL: streamData.channel.channelImageUrl,
-            url: profileLink ?? undefined,
-        })
-        .setTitle(streamData.liveTitle)
-        .addFields(fields)
-        .setImage(imageUrl)
-        .setTimestamp();
+    if (type === "video") {
+        const embed = new EmbedBuilder()
+            .setColor("#7a2015")
+            .setAuthor({
+                name: resData.channel.name,
+                iconURL: resData.channel.profileImage,
+                url: resData.channel.url,
+            })
+            .setTitle(resData.video.title)
+            .setURL(resData.video.url)
+            .setImage(resData.video.thumbnail)
+            .setTimestamp();
 
-    return embed;
+        return embed;
+    }
+
+    logWithKoreaTime("embed type이 유효하지 않습니다.");
+    return null;
 }
 
 module.exports = { createEmbed };

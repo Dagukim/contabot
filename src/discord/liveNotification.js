@@ -1,25 +1,29 @@
 const { createEmbed } = require("../utils/embeds");
-require("dotenv").config();
+const { getGuildSettings } = require("../utils/firestore");
+const { logWithKoreaTime, errorWithKoreaTime } = require("../utils/logger");
 
-async function sendLiveNoti(client, streamData) {
+async function sendLiveNoti(client, guildId, streamData) {
     try {
+        const settings = await getGuildSettings(guildId);
+        if (!settings || !settings.live.liveAlertChannelId) {
+            return;
+        }
+
         const channel = client.channels.cache.get(
-            process.env.DISCORD_CHANNEL_ID
+            settings.live.liveAlertChannelId
         );
         if (!channel) throw new Error("해당하는 채널이 없습니다.");
 
-        const embed = createEmbed(streamData);
+        const embed = createEmbed(
+            "live",
+            streamData,
+            settings.video.youtubeHandle
+        );
         await channel.send({ embeds: [embed] });
 
-        const offset = 1000 * 60 * 60 * 9;
-        const koreaNow = new Date(new Date().getTime() + offset);
-        const koreaNowStr = koreaNow
-            .toISOString()
-            .replace("T", " ")
-            .split(".")[0];
-        console.log(`${koreaNowStr} 방송시작 알림을 보냈습니다.`);
+        logWithKoreaTime(`방송시작 알림을 보냈습니다.`);
     } catch (err) {
-        console.error("방송알림을 보내기에 실패하였습니다: ", err);
+        errorWithKoreaTime("방송알림을 보내기에 실패하였습니다: ", err);
     }
 }
 
