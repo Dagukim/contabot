@@ -51,7 +51,7 @@ async function startStreamChecker(client, guildId) {
         }
 
         checkStreamStatus(client, guildId);
-        setInterval(() => checkStreamStatus(client, guildId), 45000);
+        setInterval(() => checkStreamStatus(client, guildId), 90000);
     } catch (err) {
         errorWithKoreaTime("스트림 체커 시작에 실패하였습니다: ", err);
     }
