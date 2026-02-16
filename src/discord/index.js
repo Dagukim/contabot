@@ -5,6 +5,7 @@ const { healthCheck } = require("../health/healthCheck");
 require("dotenv").config();
 
 const token = process.env.DISCORD_TOKEN;
+const PORT = process.env.PORT || 3000;
 
 const client = new Client({
     intents: [
@@ -26,4 +27,6 @@ if (process.env.ROLE_NAME) {
 
 client.login(token);
 
-healthCheck.listen(3000);
+healthCheck.listen(PORT, "0.0.0.0", () => {
+    console.log(`Health server running on ${PORT}`);
+});
