@@ -21,16 +21,19 @@ const db = new Firestore({
 const cache = {};
 
 const defaultSettings = {
-    live: {
+    platforms: {
         chzzkChannelId: "",
+        youtubeHandle: "",
+    },
+    live: {
         enableTweet: false,
         liveAlertChannelId: "",
         status: false,
+        extraLinks: [],
     },
     video: {
         latestVideoId: "",
         videoAlertChannelId: "",
-        youtubeHandle: "",
     },
     roleName: "",
 };
@@ -42,7 +45,7 @@ async function loadGuildSettings(guildId) {
 
         if (!doc.exists) {
             logWithKoreaTime(
-                "서버 설정이 Firestore에 없습니다. 기본 설정을 생성합니다."
+                "서버 설정이 Firestore에 없습니다. 기본 설정을 생성합니다.",
             );
             await docRef.set(defaultSettings);
             cache[guildId] = defaultSettings;

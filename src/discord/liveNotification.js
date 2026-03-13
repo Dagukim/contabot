@@ -10,14 +10,15 @@ async function sendLiveNoti(client, guildId, streamData) {
         }
 
         const channel = client.channels.cache.get(
-            settings.live.liveAlertChannelId
+            settings.live.liveAlertChannelId,
         );
         if (!channel) throw new Error("해당하는 채널이 없습니다.");
 
         const embed = createEmbed(
             "live",
             streamData,
-            settings.video.youtubeHandle
+            settings.platforms.youtubeHandle,
+            settings.live.extraLinks,
         );
         await channel.send({ embeds: [embed] });
 

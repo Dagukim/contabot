@@ -1,18 +1,22 @@
 const { EmbedBuilder } = require("discord.js");
 const { logWithKoreaTime } = require("./logger");
 
-function createEmbed(type, resData, ytHandle) {
-    if (type === "live") {
-        const imageUrl = resData.defaultThumbnailImageUrl
-            ? resData.defaultThumbnailImageUrl
-            : resData.liveImageUrl
-            ? resData.liveImageUrl.replace("{type}", "360")
-            : resData.channel.channelImageUrl;
+function createEmbed(type, resData, ytHandle, extraLinks) {
+    const validTypes = ["live", "video"];
+    if (!validTypes.includes(type)) {
+        logWithKoreaTime("유효하지 않은 embed type입니다.");
+        return null;
+    }
 
-        const liveCategory =
-            resData.liveCategory?.trim() && resData.liveCategory?.length > 0
-                ? resData.liveCategory.replace(/_/g, " ")
-                : "none";
+    if (type === "live") {
+        const imageUrl =
+            resData.defaultThumbnailImageUrl ??
+            resData.liveImageUrl?.replace("{type}", "360") ??
+            resData.channel?.channelImageUrl;
+
+        const liveCategory = resData.liveCategory?.trim()
+            ? resData.liveCategory.replace(/_/g, " ")
+            : "none";
 
         const fields = [
             {
@@ -29,6 +33,17 @@ function createEmbed(type, resData, ytHandle) {
             fields.push({
                 name: "🔴 YouTube",
                 value: `[link](https://www.youtube.com/${ytHandle}/live)`,
+                inline: true,
+            });
+        }
+
+        for (const link of extraLinks ?? []) {
+            if (fields.length >= 10) break;
+            if (!link?.name || !link?.url) continue;
+
+            fields.push({
+                name: link.name,
+                value: `[link](${link.url})`,
                 inline: true,
             });
         }
@@ -63,7 +78,6 @@ function createEmbed(type, resData, ytHandle) {
         return embed;
     }
 
-    logWithKoreaTime("embed type이 유효하지 않습니다.");
     return null;
 }
 

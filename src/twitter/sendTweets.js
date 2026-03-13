@@ -22,21 +22,25 @@ const twitterClient = new TwitterApi({
 });
 
 async function sendTweets(setting, streamData) {
-    const chzzkLink = `https://chzzk.naver.com/live/${setting.live.chzzkChannelId}`;
+    const chzzkLink = `https://chzzk.naver.com/live/${setting.platforms.chzzkChannelId}`;
     try {
         const ytLiveDetails = await getYoutubeLiveDetails(
-            setting.video.youtubeHandle
+            setting.platforms.youtubeHandle,
         );
+
+        const extraLinks = (setting.live.extraLinks ?? [])
+            .map((link) => link?.url)
+            .join("\n");
 
         const tweetContents = `${
             ytLiveDetails && ytLiveDetails?.liveTitle !== streamData?.liveTitle
                 ? `${ytLiveDetails?.liveTitle}\n`
                 : ""
         }${streamData?.liveTitle}\n\n${
-            setting.video.youtubeHandle && ytLiveDetails?.liveUrl
+            setting.platforms.youtubeHandle && ytLiveDetails?.liveUrl
                 ? `${ytLiveDetails?.liveUrl}\n`
                 : ""
-        }${chzzkLink}`;
+        }${chzzkLink}${extraLinks ? `\n${extraLinks}` : ""}`;
 
         await twitterClient.v2.tweet(tweetContents);
         logWithKoreaTime(`트윗을 보냈습니다.`);

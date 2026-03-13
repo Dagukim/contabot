@@ -6,17 +6,17 @@ const { getLatestVideo } = require("../youtube/youtubeApi");
 async function sendVideoNoti(client, guildId) {
     try {
         const settings = await getGuildSettings(guildId);
-        const data = await getLatestVideo(settings.video.youtubeHandle);
+        const data = await getLatestVideo(settings.platforms.youtubeHandle);
 
         if (data && data.video.id !== settings.video.latestVideoId) {
             const embed = createEmbed("video", data, settings);
 
             const channel = client.channels.cache.get(
-                settings.video.videoAlertChannelId
+                settings.video.videoAlertChannelId,
             );
             if (!channel) {
                 throw new Error(
-                    `채널 ${settings.video.videoAlertChannelId}이(가) 존재하지 않습니다.`
+                    `채널 ${settings.video.videoAlertChannelId}이(가) 존재하지 않습니다.`,
                 );
             }
             await channel.send({
@@ -37,7 +37,7 @@ async function sendVideoNoti(client, guildId) {
 async function startVideoNotifications(client, guildId) {
     try {
         const settings = await getGuildSettings(guildId);
-        if (!settings || !settings.video.youtubeHandle) {
+        if (!settings || !settings.platforms.youtubeHandle) {
             return;
         }
 

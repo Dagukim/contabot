@@ -7,7 +7,7 @@ const { getGuildSettings, updateGuildSettings } = require("../utils/firestore");
 async function checkStreamStatus(client, guildId) {
     try {
         const settings = await getGuildSettings(guildId);
-        const chzzkApiUrl = `https://api.chzzk.naver.com/service/v2/channels/${settings.live.chzzkChannelId}/live-detail`;
+        const chzzkApiUrl = `https://api.chzzk.naver.com/service/v2/channels/${settings.platforms.chzzkChannelId}/live-detail`;
 
         const res = await fetch(chzzkApiUrl, {
             method: "GET",
@@ -46,7 +46,7 @@ async function checkStreamStatus(client, guildId) {
 async function startStreamChecker(client, guildId) {
     try {
         const settings = await getGuildSettings(guildId);
-        if (!settings || !settings.live.chzzkChannelId) {
+        if (!settings || !settings.platforms.chzzkChannelId) {
             return;
         }
 
